@@ -1,0 +1,7 @@
+<div id="menu">
+    <a onclick="Common.url('/')" <?php echo ($this->main)? 'class="selected"':'';?>>Главная</a>
+    <span class="divider">|</span>
+    <a onclick='VK.callMethod("showInviteBox");'>Пригласить друзей</a>
+
+    <a class="fl_r" onclick="Common.url('/index/authors')" <?php echo ($this->my)? 'class="selected"':'';?>>Авторы</a>
+</div>
