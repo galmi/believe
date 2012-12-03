@@ -1,6 +1,6 @@
 var Feed = {
     page : 1,
-    type : 'new',
+    type : 'all',
     server: '',
     admin: false,
     votes: {believe:'Верю', not_believe:'Не верю'},
@@ -82,7 +82,7 @@ var Feed = {
         var row =
             '<div class="news_block gray_block" '+color+'>';
         if (this.admin) {
-            row += '<a onclick="Feed.del(\''+data.intention_id+'\', this)">Удалить</a>';
+            row += '<a onclick="Feed.del(\''+data.story_id+'\', this)">Удалить</a>';
         }
         row +=
             '<div style="float:right;"><div id="vk_like_' + data.story_id + '" class="like" data-id="'+data.story_id+'"></div></div>' +
@@ -113,7 +113,7 @@ var Feed = {
 
     del: function(id, el) {
         var el = $(el).parent();
-        $.get('/intention/delete/'+id, function(data){
+        $.post('/story/delete',{id:id}, function(data){
             if (data.success) {
                 el.remove();
             } else {

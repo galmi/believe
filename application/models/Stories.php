@@ -40,12 +40,23 @@ class Model_Stories extends Model_Base
         return $storyId;
     }
 
-    public static function listStories ($userId, $page=1)
+    public static function listStories ($userId, $page=1, $type='all')
     {
         if ($page<1) {
             $page = 1;
         }
-        $stories = Model_Stories::all()->sort(array('_id'=>-1))->limit(10)->skip(($page-1)*10);
+        $query = array();
+        if ($type=='new') {
+            $query = array(
+                'believe' => array('$ne'=>$userId),
+                'not_believe' => array('$ne'=>$userId)
+            );
+        } elseif ($type=='my') {
+            $query = array(
+                'author' => $userId
+            );
+        }
+        $stories = Model_Stories::all($query)->sort(array('_id'=>-1))->limit(10)->skip(($page-1)*10);
         $result = array();
         foreach ($stories as $row) {
             $vote = null;

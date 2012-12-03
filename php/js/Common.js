@@ -71,6 +71,64 @@ var Common = {
         },'json');
     },
 
+    intentionViewUid: function(inner){
+        if(inner == 'Author'){
+            var uid = [];
+            $("[uid]").each(function(){
+                uid[uid.length] = $(this).attr('uid');
+            });
+            uid = uid.join(',');
+        }else{
+            var uid = $('[uid]').attr('uid');
+        }
+        VK.api("getProfiles", {uids:uid,fields:"uid,photo_rec,city,online,sex"}, function (profiles) {
+            $.each(profiles, function(responce, objFriend){
+                $.each(objFriend, function(num, friend){
+                    $.each(friend, function(param, val){
+                        friend[param] = val;
+                    });
+                    if (inner == 'intentionAuthor'){
+                        $("[uid]").html('<a class="ava" width="30px" height="30px" onclick="Common.url(\'/user/view/' + friend['uid'] + '\')"> <img src="' + friend['photo_rec'] + '" title="' + friend['first_name'] + ' ' + friend['last_name'] + '"></a>');
+                    }
+                    if (inner == 'userFriend' || inner == 'Author'){
+                        if(friend['online'] == 0){
+                            var online = 'Не в сети';
+                        }
+                        if(friend['online'] == 1){
+                            var online = 'В сети';
+                        }
+                        var url = 'vk.com';
+                        VK.api("getCities", {cids:friend['city']}, function (city) {
+                            var friendInfo='<a target="_blank" href="http://'+ url +'/id'+ friend['uid'] +'">\
+								<div class="ava fl_l"> <img src="' + friend['photo_rec'] + '"></div>\
+								</a>\
+									<div class="info">\
+									<a target="_blank" href="http://'+ url +'/id'+ friend['uid'] +'">\
+										<div class="label">Имя:</div>\
+										<div class="labeled">' + friend['first_name'] + ' ' + friend['last_name'] + '</div>\
+										</a>';
+                            if(city.response && city.response.length==1){
+                                friendInfo +='<div class="label">Город:</div>\
+											<div class="labeled">' + city.response[0]['name'] + '</div>';
+                            }
+                            friendInfo +='<div class="online">' + online + '</div>\
+									</div>'
+                            if(inner == 'Author'){
+                                $('[uid = '+ friend['uid'] +']').html(friendInfo);
+                            }
+                            if (inner == 'userFriend'){
+                                $("[uid]").html(friendInfo);
+                            }
+                        });
+                    }
+                });
+            });
+
+        });
+
+
+    },
+
     //Обработчик события клика "Мне нравится"
     initObserver: function() {
         if (!VK.Observer) {

@@ -27,7 +27,8 @@ class StoryController extends App_Controller_Base
     public function listAction()
     {
         $page = (int)$this->_getParam('page',1);
-        $stories = Model_Stories::listStories($this->_userId, $page);
+        $type = $this->_getParam('type','all');
+        $stories = Model_Stories::listStories($this->_userId, $page, $type);
         $this->_helper->json(array(
             'success' => true,
             'data' => $stories
@@ -50,4 +51,19 @@ class StoryController extends App_Controller_Base
         }
         $this->_helper->json($result);
     }
+
+    public function deleteAction()
+    {
+        $result = array('success'=>false,'message'=>'Ошибка');
+        if ($this->view->admin) {
+            $id=$this->_getParam('id','');
+            $story=Model_Stories::find($id);
+            if ($story) {
+                $story->delete();
+                $result = array('success'=>true,'message'=>'OK');
+            }
+        }
+        $this->_helper->json($result);
+    }
+
 }

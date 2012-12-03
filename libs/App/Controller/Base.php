@@ -34,6 +34,12 @@ abstract class App_Controller_Base extends Zend_Controller_Action
             $user->ts = time();
             $user->save();
         }
+        $authors = Zend_Registry::get('authors');
+        if (in_array($this->_userId, $authors)) {
+            $this->view->admin = true;
+        } else {
+            $this->view->admin = false;
+        }
         $this->view->server_name = $_SERVER["SERVER_NAME"];
         $this->view->headLink()->appendStylesheet($this->linkToStatic('/style.css'),'screen,print');
         $this->view->headScript()->appendFile($this->linkToStatic('/js/Common.js'), 'text/javascript');

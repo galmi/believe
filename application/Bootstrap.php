@@ -42,5 +42,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Model_Vkontakte::init($options);
     }
 
+    function _initConf() {
+        $options = $this->getOption('conf');
+        Zend_Registry::set('authors', $options['authors']);
+    }
+
 }
 
